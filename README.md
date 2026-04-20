@@ -16,3 +16,8 @@ A fully functional todo application built with React Native, Expo, TypeScript, a
 - Type-safe code with TypeScript
 - Comprehensive test coverage
 - REST API integration
+
+## Run the app:
+```bash
+npx expo start
+```
