@@ -9,7 +9,7 @@ import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-nativ
 import { todoApi } from './src/services/todoApi';
 
 // Custom component for todo items
-import { TodoItem } from './src/components/TodoItem';
+import TodoItem from './src/components/TodoItem';
 
 
 export default function App() {

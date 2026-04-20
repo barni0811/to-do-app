@@ -11,8 +11,7 @@ interface TodoItemProps {
 }
 
 // TodoItem component - displays a single todo item
-// Demonstrates React best practices: component reusability and props
-export const TodoItem: React.FC<TodoItemProps> = ({ title, completed, onPress }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ title, completed, onPress }) => {
   return (
     <TouchableOpacity
       style={[styles.todoItem, completed && styles.todoItemCompleted]}
@@ -26,6 +25,9 @@ export const TodoItem: React.FC<TodoItemProps> = ({ title, completed, onPress })
     </TouchableOpacity>
   );
 };
+
+// Wrap with React.memo to prevent unnecessary re-renders
+export default React.memo(TodoItem);
 
 // Component-specific styles
 const styles = StyleSheet.create({
