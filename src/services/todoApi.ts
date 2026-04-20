@@ -1,8 +1,12 @@
+// Axios for HTTP requests
 import axios from 'axios';
-import { Todo, CreateTodoInput, UpdateTodoInput } from '../types/todo';
+// TypeScript interface for type safety
+import { Todo } from '../types/todo';
 
+// Base URL for JSONPlaceholder API
 const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
 
+// Create axios instance with default config
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -10,60 +14,33 @@ const api = axios.create({
   },
 });
 
+// Normalize todo data to ensure completed field is always boolean
+// Handles API responses that might return strings instead of booleans
+const normalizeTodo = (todo: any): Todo => ({
+  ...todo,
+  completed: typeof todo.completed === 'boolean' ? todo.completed : todo.completed === 'true' || todo.completed === true
+});
+
+// API service object with used operations
 export const todoApi = {
-  // Get all todos
+  // GET: Fetch all todos from the API
   getAllTodos: async (): Promise<Todo[]> => {
     try {
-      const response = await api.get<Todo[]>('/todos');
-      return response.data;
+      const response = await api.get<any[]>('/todos');
+      return response.data.map(normalizeTodo);
     } catch (error) {
       console.error('Error fetching todos:', error);
       throw error;
     }
   },
 
-  // Get a single todo by ID
-  getTodoById: async (id: number): Promise<Todo> => {
+  // PUT: Update an existing todo (used for toggle complete)
+  updateTodo: async (todo: { id: number; completed: boolean }): Promise<Todo> => {
     try {
-      const response = await api.get<Todo>(`/todos/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching todo ${id}:`, error);
-      throw error;
-    }
-  },
-
-  // Create a new todo
-  createTodo: async (todo: CreateTodoInput): Promise<Todo> => {
-    try {
-      const response = await api.post<Todo>('/todos', {
-        ...todo,
-        userId: todo.userId || 1,
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating todo:', error);
-      throw error;
-    }
-  },
-
-  // Update an existing todo
-  updateTodo: async (todo: UpdateTodoInput): Promise<Todo> => {
-    try {
-      const response = await api.put<Todo>(`/todos/${todo.id}`, todo);
-      return response.data;
+      const response = await api.put<any>(`/todos/${todo.id}`, todo);
+      return normalizeTodo(response.data);
     } catch (error) {
       console.error(`Error updating todo ${todo.id}:`, error);
-      throw error;
-    }
-  },
-
-  // Delete a todo
-  deleteTodo: async (id: number): Promise<void> => {
-    try {
-      await api.delete(`/todos/${id}`);
-    } catch (error) {
-      console.error(`Error deleting todo ${id}:`, error);
       throw error;
     }
   },
