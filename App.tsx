@@ -39,8 +39,8 @@ export default function App() {
     }
   };
 
-  // Toggle todo completion status with optimistic UI update
-  const toggleComplete = async (todo: any) => {
+  // Toggle todo completion status
+  const toggleComplete = (todo: any) => {
     // Convert completed to boolean (handles string/boolean from API)
     const completed = typeof todo.completed === 'boolean' ? todo.completed : todo.completed === 'true' || todo.completed === true;
     const newCompleted = !completed;
@@ -63,33 +63,8 @@ export default function App() {
       return 0;
     });
     
-    // Update UI immediately for instant feedback
+    // Update UI immediately
     setTodos(updatedTodos);
-    
-    // Then sync with API in background
-    try {
-      await todoApi.updateTodo({
-        id: todo.id,
-        completed: newCompleted,
-      });
-    } catch (err) {
-      console.error('Error updating todo:', err);
-      // Revert on error if needed
-      const revertedTodos = todos.map((item) => {
-        if (item.id === todo.id) {
-          const newItem = { ...item };
-          newItem.completed = completed;
-          return newItem;
-        }
-        return item;
-      });
-      revertedTodos.sort((a, b) => {
-        if (a.completed && !b.completed) return 1;
-        if (!a.completed && b.completed) return -1;
-        return 0;
-      });
-      setTodos(revertedTodos);
-    }
   };
 
   return (

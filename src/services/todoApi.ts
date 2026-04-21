@@ -34,14 +34,4 @@ export const todoApi = {
     }
   },
 
-  // PUT: Update an existing todo (used for toggle complete)
-  updateTodo: async (todo: { id: number; completed: boolean }): Promise<Todo> => {
-    try {
-      const response = await api.put<any>(`/todos/${todo.id}`, todo);
-      return normalizeTodo(response.data);
-    } catch (error) {
-      console.error(`Error updating todo ${todo.id}:`, error);
-      throw error;
-    }
-  },
 };
